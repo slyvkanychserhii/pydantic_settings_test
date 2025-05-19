@@ -2,9 +2,10 @@ from pydantic import SecretStr, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import List
 from urllib.parse import quote_plus
+from functools import lru_cache
 
 
-class TgBot(BaseSettings):
+class TgBotSettings(BaseSettings):
     token_secret_str: SecretStr = Field(..., alias="token")
     admin_ids: List[int]
 
@@ -33,7 +34,7 @@ class DatabaseSettings(BaseSettings):
 
 
 class Settings(BaseSettings):
-    tgbot: TgBot
+    tgbot: TgBotSettings
     db: DatabaseSettings
 
     model_config = SettingsConfigDict(
@@ -42,3 +43,9 @@ class Settings(BaseSettings):
         env_nested_delimiter="__",
         extra="ignore"
     )
+
+
+@lru_cache(maxsize=1)
+def get_settings() -> Settings:
+    """Get cached application settings."""
+    return Settings()

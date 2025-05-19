@@ -1,6 +1,6 @@
 from pydantic import SecretStr, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import List
+from typing import List, Optional
 from urllib.parse import quote_plus
 from functools import lru_cache
 
@@ -16,11 +16,11 @@ class TgBotSettings(BaseSettings):
 
 
 class DatabaseSettings(BaseSettings):
-    username: str
-    password: SecretStr
-    host: str
-    port: int
-    database: str
+    username: str = "postgres"
+    password: Optional[SecretStr] = None
+    host: str = "localhost"
+    port: int = 5432
+    database: str = "postgres"
 
     @property
     def url(self) -> str:
